@@ -30,7 +30,7 @@
                         <a class="nav-link" href="index.html">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="panier.html">Panier</a>
+                        <a class="nav-link" href="#">Panier</a>
                     </li>
                 </ul>
             </div>
@@ -43,20 +43,35 @@
 <main>
     <div class="container my-5">
         <div class="row">
-            <div class="col-9">
-                <h1 class="h3" id="product-name">Inconnu</h1> <!-- Titre de l'article -->
-                <div id="product-description">Inconnu</div> <!-- Description de l'article -->
-                <span id="product-price">--</span> € <!-- Prix de l'article -->
-                <select class="form-select my-3" id="product-options"> <!-- Propriété de l'article -->
-                    <option selected disabled>Choisissez la couleur...</option>
-                </select>
-                <!-- Bouton pour ajouter dans le panier -->
-                <button id="product-add" type="button" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Ajouter au panier</a>
-                </button>
-            </div>
-            <div class="col-3 text-center">
-                <div id="product-img"></div> <!-- Image de l'article -->
+            <div class="col">
+                <h1 class="h3">
+                    Votre panier
+                </h1>
+                <div id="panier-alert"></div> <!-- AFFICHAGE DES ALERTES -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nom de l'article</th>
+                        <th scope="col">Prix unitaire</th>
+                        <th scope="col">Quantité</th>
+                        <th scope="col">Prix total</th>
+                    </tr>
+                    </thead>
+                    <tbody id="panier">
+                    </tbody>
+                    <tfoot>
+                        <td>
+                            <button type="button" id="clear-basket" class="my-2 btn btn-danger">
+                                <i class="fas fa-trash-alt"></i>
+                                Vider le panier
+                            </button>
+                        </td>
+                        <td></td>
+                        <td><div class="fw-bold">Montant total: <span class="fst-normal" id="panier-total">0</span>€</div></td>
+                        <td></td>
+                    </tfoot>
+                </table>
+
             </div>
         </div>
     </div>
@@ -77,15 +92,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="js/app.js"></script>
 <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString); //Récupération des paramétres dans l'URL
-    const itemID = urlParams.get("id");
-    showItem(itemID);
+    showBasket();
 
     //Mise sous écoute de l'évenement click sur le bouton
-    document.getElementById("product-add").addEventListener("click", function(event){
+    document.getElementById("clear-basket").addEventListener("click", function(event){
         event.preventDefault();
-        addArticle(itemID);
+        clearBasket(); //Suppression du panier
     })
 </script>
 </html>

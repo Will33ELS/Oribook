@@ -84,6 +84,19 @@ const addArticle = (item_id) => {
     refreshBadgeButton(item_id);
 }
 
+/* SUPPRESSION DU PANIER */
+const clearBasket = () => {
+    localStorage.removeItem("basket");
+    //SUPPRESSION DU CONTENU DU PANIER
+    const tbody = document.getElementById("panier");
+    tbody.remove();
+    $("#panier-total").html(0);
+    const panierAlert = document.getElementById("panier-alert");
+    const alert = document.createElement("div");
+    $(alert).addClass("alert alert-info").attr("role", "alert").html("<i class='fas fa-info-circle'></i> Votre panier est vide");
+    $(panierAlert).append(alert);
+}
+
 /* QUANTITE DUN MEME ARTICLE DANS LE PANIER */
 const countArticleInBasket = (item_id) => {
     let count = 0;
@@ -94,6 +107,44 @@ const countArticleInBasket = (item_id) => {
         }
     });
     return count;
+}
+
+/* AFFICHAGE DU CONTENU DU PANIER */
+const showBasket = () => {
+    const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
+    if(basket.length == 0){
+        const panierAlert = document.getElementById("panier-alert");
+        const alert = document.createElement("div");
+        $(alert).addClass("alert alert-info").attr("role", "alert").html("<i class='fas fa-info-circle'></i> Votre panier est vide");
+        $(panierAlert).append(alert);
+    }else{
+        const tbody = document.getElementById("panier");
+        basket.forEach(item => {
+            $.get(hostAPI+"/api/teddies").done(function(data){
+                let total = 0;
+                data.forEach(itemData => {
+                    if(itemData._id == item.id){
+                        const tr = document.createElement("tr");
+                        const articleName = document.createElement("td");
+                        $(articleName).html(itemData.name);
+                        $(tr).append(articleName);
+                        const priceunit = document.createElement("td");
+                        $(priceunit).html(itemData.price+" €");
+                        $(tr).append(priceunit);
+                        const quantity = document.createElement("td");
+                        $(quantity).html(item.quantity);
+                        $(tr).append(quantity);
+                        const pricetotal = document.createElement("td");
+                        $(pricetotal).html(item.quantity*itemData.price+" €");
+                        $(tr).append(pricetotal);
+                        $(tbody).append(tr);
+                        total += item.quantity*itemData.price;
+                    }
+                });
+                $("#panier-total").html(total);
+            });
+        });
+    }
 }
 
 /* CLASSE QUI CORRESPOND A L'ARTICLE */
