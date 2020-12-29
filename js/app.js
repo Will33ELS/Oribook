@@ -119,14 +119,14 @@ const showBasket = () => {
         $(panierAlert).append(alert);
     }else{
         const tbody = document.getElementById("panier");
+        let total = 0;
         basket.forEach(item => {
             $.get(hostAPI+"/api/teddies").done(function(data){
-                let total = 0;
                 data.forEach(itemData => {
                     if(itemData._id == item.id){
                         const tr = document.createElement("tr");
                         const articleName = document.createElement("td");
-                        $(articleName).html(itemData.name);
+                        $(articleName).html("<a href='produit.html?id="+itemData._id+"'>"+itemData.name+"</a>");
                         $(tr).append(articleName);
                         const priceunit = document.createElement("td");
                         $(priceunit).html(itemData.price+" €");
