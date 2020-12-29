@@ -49,13 +49,51 @@ const showItem = (item_id) => {
             item.colors.forEach(color =>  select.append(new Option(color, color)));
             const img = document.createElement("img");
             $(img).addClass("img-fluid").attr("src", item.imageUrl).attr("alt", item.name).appendTo($("#product-img"));
+            if(countArticleInBasket(item_id) > 0){
+                refreshBadgeButton(item_id);
+            }
         }
     });
 }
 
-/* AJOUT D'UN ARTICLE DANS LE PANIER */
-const addArticle = () => {
+/* RAFRAICHIR LA BADGE PRESENT DANS LE BOUTON SUR LA PAGE PRODUIT */
+const refreshBadgeButton = (item_id) => {
+    let badge = document.getElementById("button-badge") ;
+    if(document.getElementById("button-badge")  == null){
+        badge = document.createElement("span");
+        $(badge).attr("id", "button-badge").addClass("mx-1 badge rounded-pill bg-secondary");
+        $("#product-add").append($(badge));
+    }
+    $(badge).html(countArticleInBasket(item_id));
+}
 
+/* AJOUT D'UN ARTICLE DANS LE PANIER */
+const addArticle = (item_id) => {
+    const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
+    let item = basket.find(item => item.id == item_id);
+    if(item == null){
+        item = {
+            id: item_id,
+            quantity: 1
+        };
+        basket.push(item);
+    }else{
+        item.quantity += 1;
+    }
+    localStorage.setItem('basket', JSON.stringify(basket));
+    refreshBadgeButton(item_id);
+}
+
+/* QUANTITE DUN MEME ARTICLE DANS LE PANIER */
+const countArticleInBasket = (item_id) => {
+    let count = 0;
+    const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
+    basket.forEach(item => {
+        if(item.id == item_id){
+            count = item.quantity;
+        }
+    });
+    return count;
 }
 
 /* CLASSE QUI CORRESPOND A L'ARTICLE */

@@ -50,7 +50,10 @@
                 <select class="form-select my-3" id="product-options"> <!-- Propriété de l'article -->
                     <option selected disabled>Choisissez la couleur...</option>
                 </select>
-                <a id="product-add" class="btn btn-success" href="#"><i class="fas fa-plus"></i> Ajouter au panier</a> <!-- Bouton pour ajouter dans le panier -->
+                <!-- Bouton pour ajouter dans le panier -->
+                <button id="product-add" type="button" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Ajouter au panier</a>
+                </button>
             </div>
             <div class="col-3 text-center">
                 <div id="product-img"></div> <!-- Image de l'article -->
@@ -76,6 +79,13 @@
 <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString); //Récupération des paramétres dans l'URL
-    showItem(urlParams.get("id"));
+    const itemID = urlParams.get("id");
+    showItem(itemID);
+
+    //Mise sous écoute de l'évenement click sur le bouton
+    document.getElementById("product-add").addEventListener("click", function(event){
+        event.preventDefault();
+        addArticle(itemID);
+    })
 </script>
 </html>
