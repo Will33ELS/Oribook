@@ -4,7 +4,7 @@ const hostAPI = "http://localhost:3000"; // A MODIFIER LORS DE L'INSTALLATION
 const showItems = () => {
     $.get(hostAPI+"/api/teddies").done(function(data){
         let items = [];
-        data.forEach(item => items.push(new Item(item.name, item.price, item.description, item.imageUrl)));
+        data.forEach(item => items.push(new Item(item._id, item.name, item.price, item.description, item.imageUrl)));
         items.forEach(item => {
             console.log(item);
             const card = document.createElement("div");
@@ -20,7 +20,7 @@ const showItems = () => {
             const cardPrice = document.createElement("p");
             $(cardPrice).addClass("card-text").html(item.price+"€").appendTo($(cardBody));
             const cardLink = document.createElement("a");
-            $(cardLink).addClass("btn btn-primary").html("Voir le produit").attr("href", "#").appendTo($(cardBody));
+            $(cardLink).addClass("btn btn-primary").html("Voir le produit").attr("href", "produit.html?id="+item.id).appendTo($(cardBody));
 
             $("#items").append($(card));
         });
@@ -28,9 +28,40 @@ const showItems = () => {
     });
 };
 
+/* AFFICHAGE DES INFORMATIONS DE L'ARTICLE */
+const showItem = (item_id) => {
+    $.get(hostAPI+"/api/teddies").done(function(data){
+        let item = null;
+        //RECUPERATION DE L'ARTICLE A PARTIR DE L'ID FOURNIS
+        data.forEach(itemData => {
+            if(item_id == itemData._id)
+                item = itemData;
+        });
+
+        if(item == null) //AUCUN ARTICLE TROUVE SUR L'ID FOURNIS, REDIRECTION DE L'UTILISATEUR
+            window.location.href = "index.html";
+        else{
+            //ARTICLE TROUVE, INSERTION DES INFORMATIONS
+            $("#product-name").html(item.name);
+            $("#product-description").html(item.description);
+            $("#product-price").html(item.price);
+            const select = $("#product-options");
+            item.colors.forEach(color =>  select.append(new Option(color, color)));
+            const img = document.createElement("img");
+            $(img).addClass("img-fluid").attr("src", item.imageUrl).attr("alt", item.name).appendTo($("#product-img"));
+        }
+    });
+}
+
+/* AJOUT D'UN ARTICLE DANS LE PANIER */
+const addArticle = () => {
+
+}
+
 /* CLASSE QUI CORRESPOND A L'ARTICLE */
 class Item{
-    constructor(name, price, description, imageUrl) {
+    constructor(id, name, price, description, imageUrl) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
