@@ -213,7 +213,7 @@ const sendAlert = (alertType, message) => {
         console.error("Le type d'alerte renseigné n'est pas correct.")
     }else {
         const panierAlert = document.getElementById("panier-alert");
-        if(panierAlert.childNodes.length > 0)
+        if(panierAlert != null && panierAlert.childNodes.length > 0)
             panierAlert.removeChild(panierAlert.childNodes[0]);
         const alert = document.createElement("div");
         $(alert).addClass("alert alert-" + alertType).attr("role", "alert").html(message);
