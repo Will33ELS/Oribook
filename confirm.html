@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <meta name="author" content="William AVENTIN">
     <meta name="robots" content="index, follow">
-    <title>Orinoco - Produit</title>
+    <title>Orinoco</title>
 
     <!-- CHARGEMENT DES FICHES DE STYLES -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Accueil</a>
+                        <a class="nav-link active" href="index.html">Accueil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="panier.html">Panier</a>
@@ -41,23 +41,13 @@
 <!-- FIN du HEADER -->
 <!-- MAIN de la page -->
 <main>
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-9">
-                <h1 class="h3" id="product-name">Inconnu</h1> <!-- Titre de l'article -->
-                <div id="product-description">Inconnu</div> <!-- Description de l'article -->
-                <span id="product-price">--</span> € <!-- Prix de l'article -->
-                <select class="form-select my-3" id="product-options"> <!-- Propriété de l'article -->
-                    <option selected disabled>Choisissez la couleur...</option>
-                </select>
-                <!-- Bouton pour ajouter dans le panier -->
-                <button id="product-add" type="button" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Ajouter au panier</a>
-                </button>
-            </div>
-            <div class="col-3 text-center">
-                <div id="product-img"></div> <!-- Image de l'article -->
-            </div>
+    <div class="container my-4">
+        <!-- AFFICHAGE DES ITEMS -->
+        <div class="row text-center">
+            <h1>Confirmation de votre commande</h1>
+            <p class="h3">Merci pour votre achat !</p>
+            <p>Votre numéro de commande: <span id="command_number"></span></p>
+            <p>Pour un montant total de <span id="command_total">--</span>€</p>
         </div>
     </div>
 </main>
@@ -71,21 +61,11 @@
     </div>
 </footer>
 <!-- FIN du FOOTER -->
-
 <!-- CHARGEMENT DES SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="js/app.js"></script>
 <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString); //Récupération des paramétres dans l'URL
-    const itemID = urlParams.get("id");
-    showItem(itemID);
-
-    //Mise sous écoute de l'évenement click sur le bouton
-    document.getElementById("product-add").addEventListener("click", function(event){
-        event.preventDefault();
-        addArticle(itemID);
-    })
+    showConfirm();
 </script>
 </html>

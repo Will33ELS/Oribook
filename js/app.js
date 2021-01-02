@@ -143,13 +143,18 @@ const showBasket = () => {
     }
 }
 
+/* Validation du formulaire de contact */
 const validateFormulaire = () => {
     if(localStorage.getItem('basket') == null ){
         sendAlert("info", "<i class='fas fa-info-circle'></i> Votre panier est vide");
     }else{
         const basket = JSON.parse(localStorage.getItem('basket'));
         const productsID = [];
-        basket.forEach(item => productsID.push(item.id));
+        basket.forEach(item => {
+            for(i = 1; i <= item.quantity; i++) {
+                productsID.push(item.id)
+            }
+        });
         const lastNameInput = document.getElementById("nom").value; //Input Nom
         const firstNameInput = document.getElementById("prenom").value; //Input Prénom
         const emailInput = document.getElementById("email").value; //Input Email
@@ -164,9 +169,10 @@ const validateFormulaire = () => {
                 //RECUPERATION DE LA REPONSE DE L'API
                 if (this.status == 201) {
                     var data = JSON.parse(this.responseText);
-                    //TODO TRAITEMENT DE LA REPONSE
-                    console.log(data);
-
+                    var price = 0;
+                    data.products.forEach(product => price += product.price);
+                    clearBasket(); //SUPPRESSION DU PANIER
+                    window.location.replace("confirm.html?orderId="+data.orderId+"&price="+price); //REDIRECTION VERS LA PAGE DE CONFIRMATION
                 }else if(this.status >= 400 && this.status < 600){ //L'API A RETOURNE UNE ERREUR
                     sendAlert("danger", "Une erreur a eu lieu lors de l'envoie du formulaire.")
                 }
@@ -189,6 +195,16 @@ const validateFormulaire = () => {
             sendAlert("danger", "<i class=\"fas fa-exclamation-triangle\"></i> Tous les champs sont requis.");
         }
     }
+};
+
+/* Affichage de la page de confirmation */
+const showConfirm = () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString); //Récupération des paramétres dans l'URL
+    const orderId = urlParams.get("orderId");
+    const price = urlParams.get("price");
+    $("#command_number").html(orderId);
+    $("#command_total").html(price);
 };
 
 /* Affichage d'alerte sur la page Panier.html */
