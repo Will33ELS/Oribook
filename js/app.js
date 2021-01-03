@@ -25,6 +25,8 @@ const showItems = () => {
             $("#items").append($(card));
         });
 
+    }).catch(function (err){
+        sendAlert("danger", "<i class=\"fas fa-exclamation-triangle\"></i> Un incident lors de la connexion à l'API a eu lieu.");
     });
 };
 
@@ -53,6 +55,8 @@ const showItem = (item_id) => {
                 refreshBadgeButton(item_id);
             }
         }
+    }).catch(function (err){
+        sendAlert("danger", "<i class=\"fas fa-exclamation-triangle\"></i> Un incident lors de la connexion à l'API a eu lieu.");
     });
 }
 
@@ -207,17 +211,17 @@ const showConfirm = () => {
     $("#command_total").html(price);
 };
 
-/* Affichage d'alerte sur la page Panier.html */
+/* Affichage d'alerte */
 const sendAlert = (alertType, message) => {
     if(alertType !== "primary" && alertType !== "secondary" && alertType !== "success" && alertType !== "danger" && alertType !== "warning" && alertType !== "info" && alertType !== "light" && alertType !== "dark"){
         console.error("Le type d'alerte renseigné n'est pas correct.")
     }else {
-        const panierAlert = document.getElementById("panier-alert");
-        if(panierAlert != null && panierAlert.childNodes.length > 0)
-            panierAlert.removeChild(panierAlert.childNodes[0]);
+        const alertDiv = document.getElementById("alert");
+        if(alertDiv != null && alertDiv.childNodes.length > 0)
+            alertDiv.removeChild(alertDiv.childNodes[0]);
         const alert = document.createElement("div");
         $(alert).addClass("alert alert-" + alertType).attr("role", "alert").html(message);
-        $(panierAlert).append(alert);
+        $(alertDiv).append(alert);
     }
 };
 
