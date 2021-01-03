@@ -1,10 +1,18 @@
+"use strict";
+
 const hostAPI = "http://localhost:3000"; // A MODIFIER LORS DE L'INSTALLATION
 
 /* AFFICHAGES DES ITEMS DEPUIS L'API*/
 const showItems = () => {
     $.get(hostAPI+"/api/teddies").done(function(data){
         let items = [];
-        data.forEach(item => items.push(new Item(item._id, item.name, item.price, item.description, item.imageUrl)));
+        data.forEach(item => items.push({
+            "id": item._id,
+            "name": item.name,
+            "price": item.price,
+            "description": item.description,
+            "imageUrl": item.imageUrl
+        }));
         items.forEach(item => {
             console.log(item);
             const card = $(document.createElement("div"));
@@ -81,7 +89,7 @@ const addArticle = (item_id) => {
                 item = itemData;
         });
         if(item == null){
-            console.error("L'ID renseigné ne correspond à aucun produit.")
+            console.error("L'ID renseigné ne correspond à aucun produit.");
         }else {
             const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
             item = basket.find(item => item.id == item_id);
@@ -98,7 +106,7 @@ const addArticle = (item_id) => {
             refreshBadgeButton(item_id);
         }
     }).catch(function (err){
-        console.error("Un incident lors de la connexion à l'API a eu lieu.")
+        console.error("Un incident lors de la connexion à l'API a eu lieu.");
     });
 
 }
@@ -172,8 +180,8 @@ const validateFormulaire = () => {
         const basket = JSON.parse(localStorage.getItem('basket'));
         const productsID = [];
         basket.forEach(item => {
-            for(i = 1; i <= item.quantity; i++) {
-                productsID.push(item.id)
+            for(let i = 1; i <= item.quantity; i++) {
+                productsID.push(item.id);
             }
         });
         const lastNameInput = document.getElementById("nom").value; //Input Nom
@@ -185,12 +193,12 @@ const validateFormulaire = () => {
         //VERIFICATION QUE LES VALEURS NE SONT PAS VIDE
         if(lastNameInput.length > 0 && firstNameInput.length > 0 && emailInput.length > 0 && addressInput.length > 0 && cityInput.length > 0 && codePostalInput.length > 0){
             //ENVOIE DE LA REQUETE A L'API
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 //RECUPERATION DE LA REPONSE DE L'API
                 if (this.status == 201) {
-                    var data = JSON.parse(this.responseText);
-                    var price = 0;
+                    let data = JSON.parse(this.responseText);
+                    let price = 0;
                     data.products.forEach(product => price += product.price);
                     clearBasket(); //SUPPRESSION DU PANIER
                     window.location.replace("confirm.html?orderId="+data.orderId+"&price="+price); //REDIRECTION VERS LA PAGE DE CONFIRMATION
@@ -198,7 +206,7 @@ const validateFormulaire = () => {
                     sendAlert("danger", "Une erreur a eu lieu lors de l'envoie du formulaire.")
                 }
             };
-            xhr.open("POST", hostAPI+"/api/teddies/order", false);
+            xhr.open("POST", hostAPI+"/api/teddies/order", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             //DEFINITION DU BODY
             xhr.send(JSON.stringify({
@@ -207,9 +215,9 @@ const validateFormulaire = () => {
                         "lastName": lastNameInput,
                         "address": addressInput,
                         "city": cityInput,
-                        "email": emailInput
+                        "email": emailInput,
                     },
-                    "products": productsID
+                    "products": productsID,
                 }
             ));
         }else{
@@ -234,21 +242,11 @@ const sendAlert = (alertType, message) => {
         console.error("Le type d'alerte renseigné n'est pas correct.")
     }else {
         const alertDiv = $(document.getElementById("alert"));
-        if(alertDiv != null && alertDiv.childNodes.length > 0)
-            alertDiv.removeChild(alertDiv.childNodes[0]);
+        if(alertDiv.length > 0) {
+            alertDiv.children(0).remove();
+        }
         const alert = $(document.createElement("div"));
         alert.addClass("alert alert-" + alertType).attr("role", "alert").html(message);
         alertDiv.append(alert);
     }
 };
-
-/* CLASSE QUI CORRESPOND A L'ARTICLE */
-class Item{
-    constructor(id, name, price, description, imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.imageUrl = imageUrl;
-    }
-}
