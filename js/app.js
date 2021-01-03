@@ -73,19 +73,34 @@ const refreshBadgeButton = (item_id) => {
 
 /* AJOUT D'UN ARTICLE DANS LE PANIER */
 const addArticle = (item_id) => {
-    const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
-    let item = basket.find(item => item.id == item_id);
-    if(item == null){
-        item = {
-            id: item_id,
-            quantity: 1
-        };
-        basket.push(item);
-    }else{
-        item.quantity += 1;
-    }
-    localStorage.setItem('basket', JSON.stringify(basket));
-    refreshBadgeButton(item_id);
+    $.get(hostAPI+"/api/teddies").done(function(data) {
+        let item = null;
+        //RECUPERATION DE L'ARTICLE A PARTIR DE L'ID FOURNIS
+        data.forEach(itemData => {
+            if (item_id == itemData._id)
+                item = itemData;
+        });
+        if(item == null){
+            console.error("L'ID renseigné ne correspond à aucun produit.")
+        }else {
+            const basket = localStorage.getItem('basket') == null ? [] : JSON.parse(localStorage.getItem('basket'));
+            item = basket.find(item => item.id == item_id);
+            if (item == null) {
+                item = {
+                    id: item_id,
+                    quantity: 1
+                };
+                basket.push(item);
+            } else {
+                item.quantity += 1;
+            }
+            localStorage.setItem('basket', JSON.stringify(basket));
+            refreshBadgeButton(item_id);
+        }
+    }).catch(function (err){
+        console.error("Un incident lors de la connexion à l'API a eu lieu.")
+    });
+
 }
 
 /* SUPPRESSION DU PANIER */
@@ -142,6 +157,8 @@ const showBasket = () => {
                     }
                 });
                 $("#panier-total").html(total);
+            }).catch(function (){
+                sendAlert("danger", "<i class=\"fas fa-exclamation-triangle\"></i> Un incident lors de la connexion à l'API a eu lieu.");
             });
         });
     }
