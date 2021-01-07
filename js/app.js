@@ -12,21 +12,35 @@ const showItems = async () => {
                 _id, name, price, description, imageUrl
             }));
             items.forEach(item => {
-                const card = $(document.createElement("div"));
-                card.addClass("m-2 card").css("width", "18rem");
-                const img = $(document.createElement("img"));
-                img.addClass("card-img-top").attr("src", item.imageUrl).attr("alt", item.name).appendTo(card);
-                const cardBody = $(document.createElement("div"));
-                cardBody.addClass("card-body").appendTo(card);
-                const cardTitle = $(document.createElement("h5"));
-                cardTitle.addClass("card-title").html(item.name).appendTo(cardBody);
-                const cardDescription = $(document.createElement("p"));
-                cardDescription.addClass("card-text").html(item.description).appendTo(cardBody);
-                const cardPrice = $(document.createElement("p"));
-                cardPrice.addClass("card-text").html(item.price + "€").appendTo(cardBody);
-                const cardLink = $(document.createElement("a"));
-                cardLink.addClass("btn btn-primary").html("Voir le produit").attr("href", "produit.html?id=" + item._id).appendTo(cardBody);
-                $("#items").append(card);
+                const card = document.createElement("div");
+                card.classList.add("m-2", "card");
+                card.style.width = "18rem";
+                const img = document.createElement("img");
+                img.classList.add("card-img-top");
+                img.setAttribute("src", item.imageUrl);
+                img.setAttribute("alt", item.name);
+                card.append(img);
+                const cardBody = document.createElement("div");
+                cardBody.classList.add("card-body");
+                card.append(cardBody);
+                const cardTitle = document.createElement("h5");
+                cardTitle.classList.add("card-title");
+                cardTitle.textContent = item.name;
+                cardBody.append(cardTitle);
+                const cardDescription = document.createElement("p");
+                cardDescription.classList.add("card-text");
+                cardDescription.textContent = item.description;
+                cardBody.append(cardDescription);
+                const cardPrice = document.createElement("p");
+                cardPrice.classList.add("card-text");
+                cardPrice.textContent = item.price+"€";
+                cardBody.append(cardPrice);
+                const cardLink = document.createElement("a");
+                cardLink.classList.add("btn", "btn-primary");
+                cardLink.textContent = "Voir le produit";
+                cardLink.setAttribute("href", "produit.html?id=" + item._id);
+                cardBody.append(cardLink);
+                document.getElementById("items").append(card);
             });
         })
     }).catch(function (err){
@@ -52,13 +66,16 @@ const showItem = async (item_id) => {
                 window.location.href = "index.html";
             else {
                 //ARTICLE TROUVE, INSERTION DES INFORMATIONS
-                $("#product-name").html(item.name);
-                $("#product-description").html(item.description);
-                $("#product-price").html(item.price);
-                const select = $("#product-options");
+                document.getElementById("product-name").textContent = item.name;
+                document.getElementById("product-description").textContent = item.description;
+                document.getElementById("product-price").textContent = item.price;
+                const select = document.getElementById("product-options");
                 item.colors.forEach(color => select.append(new Option(color, color)));
-                const img = $(document.createElement("img"));
-                img.addClass("img-fluid").attr("src", item.imageUrl).attr("alt", item.name).appendTo($("#product-img"));
+                const img = document.createElement("img");
+                img.classList.add("img-fluid");
+                img.setAttribute("src", item.imageUrl);
+                img.setAttribute("alt", item.name);
+                document.getElementById("product-img").append(img);
                 if (countArticleInBasket(item_id) > 0) {
                     refreshBadgeButton(item_id);
                 }
@@ -71,13 +88,14 @@ const showItem = async (item_id) => {
 
 /* RAFRAICHIR LA BADGE PRESENT DANS LE BOUTON SUR LA PAGE PRODUIT */
 const refreshBadgeButton = (item_id) => {
-    let badge = $(document.getElementById("button-badge"));
-    if (document.getElementById("button-badge") == null) {
-        badge = $(document.createElement("span"));
-        badge.attr("id", "button-badge").addClass("mx-1 badge rounded-pill bg-secondary");
-        $("#product-add").append($(badge));
+    let badge = document.getElementById("button-badge");
+    if (badge == null) {
+        badge = document.createElement("span");
+        badge.id = "button-badge";
+        badge.classList.add("mx-1", "badge", "rounded-pill", "bg-secondary");
+        document.getElementById("product-add").append(badge);
     }
-    badge.html(countArticleInBasket(item_id));
+    badge.textContent = countArticleInBasket(item_id);
 }
 
 /* AJOUT D'UN ARTICLE DANS LE PANIER */
@@ -122,7 +140,7 @@ const clearBasket = () => {
     const tbody = document.getElementById("panier");
     if (tbody != null)
         tbody.remove();
-    $("#panier-total").html(0);
+    document.getElementById("panier-total").textContent = 0;
     sendAlert("info", "<i class='fas fa-info-circle'></i> Votre panier est vide");
 }
 
@@ -154,24 +172,24 @@ const showBasket = () => {
                     const data = Object.values(json); //CONVERSION DU JSON EN ARRAY
                     data.forEach(itemData => {
                         if (itemData._id == item.id) {
-                            const tr = $(document.createElement("tr"));
-                            const articleName = $(document.createElement("td"));
-                            articleName.html("<a href='produit.html?id=" + itemData._id + "'>" + itemData.name + "</a>");
+                            const tr = document.createElement("tr");
+                            const articleName = document.createElement("td");
+                            articleName.innerHTML = "<a href='produit.html?id=" + itemData._id + "'>" + itemData.name + "</a>";
                             tr.append(articleName);
-                            const priceunit = $(document.createElement("td"));
-                            priceunit.html(itemData.price + " €");
+                            const priceunit = document.createElement("td");
+                            priceunit.textContent = itemData.price+"€";
                             tr.append(priceunit);
-                            const quantity = $(document.createElement("td"));
-                            quantity.html(item.quantity);
+                            const quantity = document.createElement("td");
+                            quantity.textContent = item.quantity;
                             tr.append(quantity);
-                            const pricetotal = $(document.createElement("td"));
-                            pricetotal.html(item.quantity * itemData.price + " €");
+                            const pricetotal = document.createElement("td");
+                            pricetotal.textContent = item.quantity * itemData.price + " €";
                             tr.append(pricetotal);
                             tbody.append(tr);
                             total += item.quantity * itemData.price;
                         }
                     });
-                    $("#panier-total").html(total);
+                    document.getElementById("panier-total").textContent = total;
                 });
             }).catch(function (err){
                 sendAlert("danger", "<i class=\"fas fa-exclamation-triangle\"></i> Un incident lors de la connexion à l'API a eu lieu.");
@@ -245,8 +263,8 @@ const showConfirm = () => {
     const urlParams = new URLSearchParams(queryString); //Récupération des paramétres dans l'URL
     const orderId = urlParams.get("orderId");
     const price = urlParams.get("price");
-    $("#command_number").html(orderId);
-    $("#command_total").html(price);
+    document.getElementById("command_number").textContent = orderId;
+    document.getElementById("command_total").textContent = price;
 };
 
 /* Affichage d'alerte */
@@ -254,12 +272,14 @@ const sendAlert = (alertType, message) => {
     if (alertType !== "primary" && alertType !== "secondary" && alertType !== "success" && alertType !== "danger" && alertType !== "warning" && alertType !== "info" && alertType !== "light" && alertType !== "dark") {
         console.error("Le type d'alerte renseigné n'est pas correct.")
     } else {
-        const alertDiv = $(document.getElementById("alert"));
-        if (alertDiv.length > 0) {
-            alertDiv.children(0).remove();
+        const alertDiv = document.getElementById("alert");
+        while( alertDiv.firstChild) { //RECUPERATION DE TOUS LES ENFANTS
+            alertDiv.removeChild( alertDiv.firstChild); // SUPPRESSION DE L'ENFANT
         }
-        const alert = $(document.createElement("div"));
-        alert.addClass("alert alert-" + alertType).attr("role", "alert").html(message);
+        const alert = document.createElement("div");
+        alert.classList.add("alert", "alert-"+alertType);
+        alert.setAttribute("role", "alert");
+        alert.innerHTML = message;
         alertDiv.append(alert);
     }
 };
