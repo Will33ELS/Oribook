@@ -138,22 +138,24 @@ const showBasket = () => {
         let total = 0;
         basket.forEach(item => {
             API.getItem(item.id).then(itemData => {
-                const tr = document.createElement("tr");
-                const articleName = document.createElement("td");
-                articleName.innerHTML = "<a href='produit.html?id=" + itemData._id + "'>" + itemData.name + "</a>";
-                tr.append(articleName);
-                const priceunit = document.createElement("td");
-                priceunit.textContent = itemData.price+"€";
-                tr.append(priceunit);
-                const quantity = document.createElement("td");
-                quantity.textContent = item.quantity;
-                tr.append(quantity);
-                const pricetotal = document.createElement("td");
-                pricetotal.textContent = item.quantity * itemData.price + " €";
-                tr.append(pricetotal);
-                tbody.append(tr);
-                total += item.quantity * itemData.price;
-                document.getElementById("panier-total").textContent = total;
+                if(itemData !== null) {
+                    const tr = document.createElement("tr");
+                    const articleName = document.createElement("td");
+                    articleName.innerHTML = "<a href='produit.html?id=" + itemData._id + "'>" + itemData.name + "</a>";
+                    tr.append(articleName);
+                    const priceunit = document.createElement("td");
+                    priceunit.textContent = itemData.price + "€";
+                    tr.append(priceunit);
+                    const quantity = document.createElement("td");
+                    quantity.textContent = item.quantity;
+                    tr.append(quantity);
+                    const pricetotal = document.createElement("td");
+                    pricetotal.textContent = item.quantity * itemData.price + " €";
+                    tr.append(pricetotal);
+                    tbody.append(tr);
+                    total += item.quantity * itemData.price;
+                    document.getElementById("panier-total").textContent = total;
+                }
             });
         });
     }
