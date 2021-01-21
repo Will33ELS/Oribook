@@ -1,3 +1,22 @@
 #product-img img{
     max-height: 200px;
 }
+body{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    margin:0;
+    background-color: #ECECEC;
+}
+header{
+    min-height:50px;
+}
+.container{
+    background-color: white;
+}
+footer{
+    color: white;
+    background-color: #2A2A2A;
+    min-height:50px;
+    margin-top:auto;
+}
